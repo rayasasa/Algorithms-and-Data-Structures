@@ -1,2 +1,3 @@
 # Algorithms-and-Data-Structures
-Solved various algorithms and data structure questions using JavaScript
+Problems from leetcode, hacker rank and code signal.
+Used either JavaScript or Python.
