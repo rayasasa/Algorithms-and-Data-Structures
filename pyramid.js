@@ -15,7 +15,7 @@
 //       '#####'
 
 // Iterative Solution
-function pyramid(n){
+/* function pyramid(n){
     var stepLength = 2*n - 1;
     var mid = Math.round(stepLength/2);
     for(var i = 0; i < n; i++){
@@ -33,22 +33,25 @@ function init(n){
   var temp = new Array(n);
   temp.fill(' ');
   return temp
-}
+} */
 // Recursion Solution
-/* function pyramid(n, row = 0, step = ''){
+function pyramid(n, row = 0, step = ''){
     if(row === n){
         return;
     }
-    if(step.length === n+3){
+    if(step.length === 2*n-1){
         console.log(step);
         return pyramid(n, row+1)
     }
 
-    if(step.length < (n+3-row)/2 || step.length > (n+3-row)/2)
-        step += ' '
-    else
-        step += '#'
-    return pyramid(n, row, step)
+    const midpoint = Math.floor((2 * n - 1) / 2);
+    let add;
+    if (midpoint - row <= step.length && midpoint + row >= step.length) {
+        add = '#';
+      } else {
+        add = ' ';
+      }
+    return pyramid(n, row, step + add)
     
-} */
+} 
 module.exports = pyramid;
