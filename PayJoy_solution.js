@@ -1,14 +1,12 @@
-//Convert string to lower case and strip special characters and spaces
+
+// Clean up function.
+//Convert string to lower case and strip special characters and spaces.
 function clean(str){
     str = str.toLowerCase();
     str = str.replace(/[^a-z]/g, "");
     return str;
 }
 
-//check if the values are an exact match for TASK 0
-function exactMatch(x,y){
-    return clean(x) == clean(y);
-}
 
 //check if the values are a substring or similar for TASK 1,2,3
 function partialMatch(x,y){
@@ -64,6 +62,47 @@ function lookUpTableMatch(name,list){
       return([list[pairings[0]][0], list[pairings[0]][1]])
     }
 }
+
+/*
+##############################################################################
+# Part 0
+##############################################################################
+# Given two inputs `left` and `right`, return an output `pairings`...
+#
+# Where:
+# - Each item in `left` and `right` contain the following:  row_id, account_name ]
+# - And each item in `pairings` contains: [ left_row_id, right_row_id ]
+#
+# Assume:
+# - Both sides are the same size
+# - There are no duplicates
+# - You can choose the data structures for `left`, `right`, and `pairings`, I only give suggestions
+# - I'll update the question with a few complications along the way
+# - Don't optimize for time complexity
+# - Don't spend too much time on this, it's mostly setup for the following parts
+    
+
+## Inputs ##
+left = [
+    (1, 'AT&T'),
+    (2, 'Verizon')
+]
+right = [
+    (8, 'Verizon'),
+    (9, 'AT&T')
+]
+
+## Expected output ##
+expected = [
+    (2, 8),
+    (1, 9)
+] */
+
+//check if the values are an exact match for TASK 0
+function exactMatch(x,y){
+    return clean(x) == clean(y);
+}
+
 //Find pairs when its exact match - Task 0
 function findPairs0(left,right){
     let pairings = [];
@@ -76,6 +115,48 @@ function findPairs0(left,right){
     console.log("Exact Match pairings are :")
     console.log(pairings);
 }
+
+//Data for TASK O
+var left = {
+    1: 'AT&T',
+    2: 'Verizon'
+}
+var right = {
+    8:'Verizon',
+    9:'AT&T'
+}
+findPairs0(left,right);
+
+
+/*
+##############################################################################
+## Part 1 ##
+##############################################################################
+
+# Account names are no longer an exact string match
+
+# Assume:
+# - There are no items in left that don't match with an item in right, vice versa
+# - One of the two items is always a substring of the other
+# - Either the left or the right can be the substring
+
+
+## Inputs ##
+left = [
+    (1, 'AT&T Mobility LLC'),
+    (2, 'Verizon')
+]
+right = [
+    (8, 'Verizon Wireless'),
+    (9, 'AT&T')
+]
+
+## Expected output ##
+expected = [
+    (2, 8),
+    (1, 9)
+]
+*/
 //Find pairs when its partial match - Task 1
 function findPairs1(left,right){
     let pairings = [];
@@ -88,6 +169,93 @@ function findPairs1(left,right){
     console.log("Partial Match pairings are :")
     console.log(pairings);
 }
+
+//Data for TASK 1
+left = {
+    1: 'AT&T Mobility LLC',
+    2: 'Verizon'
+}
+right = {
+    8:'Verizon Wireless',
+    9:'AT&T'
+}
+findPairs1(left,right);
+
+/* Combining Part 2 and Part 3 
+#############################################################################
+## Part 3
+##############################################################################
+
+# Optimize for correctness
+
+
+## Edit Distance ##
+
+# Assume you've decided to use Levenshtein/edit distance (actually ratio)
+#
+# In practice we'd import a library and read the documentation.
+#
+# For the sake of this question, the distances between all pairs of strings is provided.
+#
+# Fields are:
+# - [ left_id, right_id, similarity, left_name, right_name ]
+
+## Edit distance lookup ##
+distances = [
+    (3, 11, 0.8823529411764706, 'T-Mobile US, Inc.', 'B Mobile US, Inc.'),
+    (3, 10, 0.875, 'T-Mobile US, Inc.', 'T MobileU, Inc.'),
+    (5, 12, 0.782608695652174, 'Blaze Wireless', 'Blz Wrlss'),
+    (5, 8, 0.6666666666666666, 'Blaze Wireless', 'Verizon Wireless'),
+    (2, 8, 0.6086956521739131, 'Verizon', 'Verizon Wireless'),
+    (4, 11, 0.5517241379310345, 'Boost Mobile', 'B Mobile US, Inc.'),
+    (4, 10, 0.5185185185185185, 'Boost Mobile', 'T MobileU, Inc.'),
+    (1, 10, 0.5, 'AT&T Mobility LLC', 'T MobileU, Inc.'),
+    (1, 11, 0.4117647058823529, 'AT&T Mobility LLC', 'B Mobile US, Inc.'),
+    (1, 9, 0.38095238095238093, 'AT&T Mobility LLC', 'AT&T'),
+    (4, 8, 0.35714285714285715, 'Boost Mobile', 'Verizon Wireless'),
+    (5, 11, 0.3225806451612903, 'Blaze Wireless', 'B Mobile US, Inc.'),
+    (4, 12, 0.2857142857142857, 'Boost Mobile', 'Blz Wrlss'),
+    (5, 10, 0.27586206896551724, 'Blaze Wireless', 'T MobileU, Inc.'),
+    (3, 8, 0.24242424242424243, 'T-Mobile US, Inc.', 'Verizon Wireless'),
+    (1, 8, 0.18181818181818182, 'AT&T Mobility LLC', 'Verizon Wireless'),
+    (2, 10, 0.18181818181818182, 'Verizon', 'T MobileU, Inc.'),
+    (2, 11, 0.16666666666666666, 'Verizon', 'B Mobile US, Inc.'),
+    (1, 12, 0.15384615384615385, 'AT&T Mobility LLC', 'Blz Wrlss'),
+    (3, 12, 0.15384615384615385, 'T-Mobile US, Inc.', 'Blz Wrlss'),
+    (2, 12, 0.125, 'Verizon', 'Blz Wrlss'),
+    (3, 9, 0.09523809523809523, 'T-Mobile US, Inc.', 'AT&T'),
+    (2, 9, 0.0, 'Verizon', 'AT&T'),
+    (4, 9, 0.0, 'Boost Mobile', 'AT&T'),
+    (5, 9, 0.0, 'Blaze Wireless', 'AT&T')
+]
+
+        
+
+## Inputs ##
+left = [
+    (1, 'AT&T Mobility LLC'),
+    (2, 'Verizon'),
+    (3, 'T-Mobile US, Inc.'),
+    (4, 'Boost Mobile'),
+    (5, 'Blaze Wireless')
+]
+right = [
+    (8, 'Verizon Wireless'),
+    (9, 'AT&T'),
+    (10, 'T MobileU, Inc.'),
+    (11, 'B Mobile US, Inc.'),
+    (12, 'Blz Wrlss')
+]
+
+## Expected output ##
+expected = [
+    (5, 12),
+    (4, 11),
+    (3, 10),
+    (2, 8),
+    (1, 9)
+]
+*/
 function findPairs2(left,right){
     var final_pairs = [];
     //for each value in the left create a sub array of related pairings
@@ -104,28 +272,6 @@ function findPairs2(left,right){
     console.log("The pairings using lookup table are :")
     console.log(final_pairs)
 }
-
-//Data for TASk O
-var left = {
-    1: 'AT&T',
-    2: 'Verizon'
-}
-var right = {
-    8:'Verizon',
-    9:'AT&T'
-}
-findPairs0(left,right);
-
-//Data for TASK 1
-left = {
-    1: 'AT&T Mobility LLC',
-    2: 'Verizon'
-}
-right = {
-    8:'Verizon Wireless',
-    9:'AT&T'
-}
-findPairs1(left,right);
 
 //Data for TASK 2,3
 left = {
